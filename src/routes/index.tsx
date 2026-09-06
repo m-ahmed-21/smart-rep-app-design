@@ -1,24 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SmartRepApp } from "@/components/smartrep-app";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "SmartRep — Real-Time Gym Tracking" },
+      { name: "description", content: "Interactive SmartRep prototype for Bluetooth rep tracking, range-of-motion feedback, and gym equipment reservation." },
+      { property: "og:title", content: "SmartRep — Real-Time Gym Tracking" },
+      { property: "og:description", content: "A high-fidelity mobile prototype for smarter, measurable gym sessions." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  return <SmartRepApp />;
 }

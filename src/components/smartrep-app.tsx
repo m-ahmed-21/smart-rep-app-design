@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
 import {
   Activity,
   ArrowLeft,
@@ -157,7 +157,7 @@ function BottomNav({ active, go }: { active: "progress" | "scan" | "profile"; go
   );
 }
 
-function PrimaryButton({ children, className, ...props }: React.ComponentProps<typeof Button>) {
+function PrimaryButton({ children, className, ...props }: ComponentProps<typeof Button>) {
   return (
     <Button className={cn("h-14 w-full rounded-sm text-sm font-bold uppercase", className)} {...props}>
       {children}

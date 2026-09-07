@@ -38,7 +38,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/smartrep-mark.svg.asset.json";
-import latPulldownAsset from "@/assets/lat-pulldown.png.asset.json";
+import latPulldownAsset from "@/assets/lat-pulldown-flaticon.png.asset.json";
 
 type Screen =
   | "auth"
@@ -145,7 +145,7 @@ function BottomNav({ active, go }: { active: "progress" | "scan" | "profile"; go
             variant="ghost"
             onClick={() => go(item.screen)}
             className={cn(
-              "h-12 flex-col gap-1 rounded-sm text-[10px] font-medium",
+              "h-12 flex-col gap-1 rounded-lg text-[10px] font-medium",
               active === item.id ? "text-foreground" : "text-muted-foreground",
             )}
           >
@@ -160,7 +160,7 @@ function BottomNav({ active, go }: { active: "progress" | "scan" | "profile"; go
 
 function PrimaryButton({ children, className, ...props }: ComponentProps<typeof Button>) {
   return (
-    <Button className={cn("h-14 w-full rounded-sm text-sm font-bold uppercase", className)} {...props}>
+    <Button className={cn("h-14 w-full rounded-lg text-sm font-bold uppercase", className)} {...props}>
       {children}
     </Button>
   );
@@ -171,7 +171,7 @@ function LatPulldown({ className, faded = false }: { className?: string; faded?:
     <img
       src={latPulldownAsset.url}
       alt="Lat Pulldown machine"
-      className={cn("object-contain invert", faded && "opacity-45", className)}
+      className={cn("object-contain", faded && "opacity-45", className)}
     />
   );
 }
@@ -233,7 +233,7 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
 
 function Field({ icon: Icon, label, value }: { icon: typeof Phone; label: string; value: string }) {
   return (
-    <label className="flex h-14 items-center gap-3 border border-border bg-card px-4">
+    <label className="flex h-14 items-center gap-3 rounded-lg border border-border bg-card px-4">
       <Icon className="size-4 text-muted-foreground" />
       <span className="sr-only">{label}</span>
       <input aria-label={label} defaultValue={value} className="min-w-0 flex-1 bg-transparent text-sm outline-none" />
@@ -247,7 +247,7 @@ function ScanScreen({ go }: { go: (screen: Screen) => void }) {
     <div className="flex min-h-full flex-col">
       <TopBar title="Scan machine" action={<Bluetooth className="size-4 text-quality-good" />} />
       <div className="px-5">
-        <div className="relative h-[500px] overflow-hidden rounded-sm bg-camera">
+        <div className="relative h-[500px] overflow-hidden rounded-lg bg-camera">
           <div className="absolute inset-0 camera-grid opacity-40" />
           <div className="absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 scan-frame">
             <div className="scan-line" />
@@ -374,7 +374,7 @@ function ReservationScreen({ go }: { go: (screen: Screen) => void }) {
           <Stepper label="Number of sets" value={sets} setValue={setSets} min={1} max={8} />
           <Stepper label="Reps per set" value={reps} setValue={setReps} min={1} max={30} />
         </div>
-        <div className="mt-6 flex gap-3 border border-border bg-card p-4">
+        <div className="mt-6 flex gap-3 rounded-lg border border-border bg-card p-4">
           <ShieldCheck className="mt-0.5 size-5 shrink-0" />
           <p className="text-xs leading-relaxed text-muted-foreground">
             This station is held for you until all {sets} sets are complete or you end the exercise.
@@ -412,8 +412,8 @@ function CalibrationScreen({ go }: { go: (screen: Screen) => void }) {
         <div className="mt-6 h-1 bg-secondary">
           <div className="h-full bg-foreground transition-all duration-500" style={{ width: `${Math.min(rep / 5, 1) * 100}%` }} />
         </div>
-        <div className="relative mt-8 flex h-[350px] items-center justify-center border-y border-border">
-          <LatPulldown className="h-48 w-48" />
+        <div className="relative mt-8 h-[350px] overflow-hidden rounded-lg border border-border bg-card/35">
+          <LatPulldown className="absolute left-5 top-7 h-56 w-60 object-left" />
           <div className="absolute right-4 top-8 flex h-64 items-center gap-3">
             <div className="relative h-full w-3 rounded-full bg-secondary">
               <div className="absolute bottom-0 left-0 w-full rounded-full bg-foreground transition-all duration-500" style={{ height: `${20 + (rep % 5) * 17}%` }} />
@@ -522,7 +522,7 @@ function TrackingScreen({ go }: { go: (screen: Screen) => void }) {
         <Button variant="ghost" className="mt-1 w-full text-xs text-muted-foreground" onClick={() => setWarning(true)}>Preview form alert</Button>
       </div>
       {warning && (
-        <div className="absolute inset-x-4 bottom-5 z-20 border border-quality-warn/40 bg-popover p-4 shadow-alert" role="alert">
+        <div className="absolute inset-x-4 bottom-5 z-20 rounded-lg border border-quality-warn/40 bg-popover p-4 shadow-alert" role="alert">
           <div className="flex items-start gap-3"><div className="grid size-9 shrink-0 place-items-center rounded-full bg-quality-warn/10"><TriangleAlert className="size-5 text-quality-warn" /></div><div className="min-w-0 flex-1"><div className="flex justify-between gap-3"><p className="text-xs font-bold uppercase">Form is drifting</p><Button variant="ghost" size="icon" aria-label="Dismiss warning" onClick={() => setWarning(false)} className="-mr-2 -mt-2 size-8 rounded-full"><X /></Button></div><p className="mt-1 text-xs leading-relaxed text-muted-foreground">Your range dropped 12%. Keep your chest tall—you’re close. Two strong reps left.</p></div></div>
         </div>
       )}
@@ -566,7 +566,7 @@ function SummaryScreen({ go }: { go: (screen: Screen) => void }) {
         <div className="grid grid-cols-3 divide-x divide-border border-b border-border py-5 text-center"><div><p className="font-display text-3xl font-bold">30</p><p className="text-[9px] uppercase text-muted-foreground">Total reps</p></div><div><p className="font-display text-3xl font-bold">3/3</p><p className="text-[9px] uppercase text-muted-foreground">Sets</p></div><div><p className="font-display text-3xl font-bold">87</p><p className="text-[9px] uppercase text-muted-foreground">Quality</p></div></div>
         <section className="py-5"><div className="flex items-center justify-between"><h2 className="text-xs font-bold uppercase">ROM & tempo trend</h2><span className="text-[10px] font-bold text-quality-good">+6.4% TODAY</span></div><Sparkline values={[62, 70, 66, 76, 82, 79, 88, 91]} /><div className="flex justify-between text-[9px] uppercase text-muted-foreground"><span>Set 1</span><span>Set 2</span><span>Set 3</span></div></section>
         <section className="border-y border-border py-5"><h2 className="text-xs font-bold uppercase">Rep quality</h2><div className="mt-4 flex h-3 overflow-hidden rounded-full"><span className="bg-quality-good" style={{ width: "73%" }} /><span className="bg-quality-warn" style={{ width: "20%" }} /><span className="bg-quality-poor" style={{ width: "7%" }} /></div><div className="mt-3 grid grid-cols-3 text-[10px]"><span><b className="text-quality-good">22</b> good</span><span><b className="text-quality-warn">6</b> moderate</span><span><b className="text-quality-poor">2</b> poor</span></div></section>
-        <div className="mt-5 flex gap-3 border border-border bg-card p-4"><Sparkles className="mt-0.5 size-5 shrink-0 text-quality-good" /><div><p className="text-xs font-bold uppercase">Coach insight</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">Your tempo stayed consistent. Fatigue appeared at rep 7 in set 2, but you recovered after rest.</p></div></div>
+        <div className="mt-5 flex gap-3 rounded-lg border border-border bg-card p-4"><Sparkles className="mt-0.5 size-5 shrink-0 text-quality-good" /><div><p className="text-xs font-bold uppercase">Coach insight</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">Your tempo stayed consistent. Fatigue appeared at rep 7 in set 2, but you recovered after rest.</p></div></div>
         <PrimaryButton className="mt-5" onClick={() => go("profile")}>Done <Check /></PrimaryButton>
       </div>
     </div>
@@ -589,7 +589,7 @@ function ProfileScreen({ go }: { go: (screen: Screen) => void }) {
 }
 
 function Metric({ label, value, suffix }: { label: string; value: string; suffix: string }) {
-  return <div className="bg-card p-4"><p className="text-[9px] uppercase text-muted-foreground">{label}</p><p className="mt-2 font-display text-2xl font-bold">{value}<span className="ml-1 text-[10px] text-muted-foreground">{suffix}</span></p></div>;
+  return <div className="rounded-lg bg-card p-4"><p className="text-[9px] uppercase text-muted-foreground">{label}</p><p className="mt-2 font-display text-2xl font-bold">{value}<span className="ml-1 text-[10px] text-muted-foreground">{suffix}</span></p></div>;
 }
 
 function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
@@ -601,7 +601,7 @@ function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
         <p className="mt-5 text-xs font-bold uppercase text-quality-warn">Currently reserved</p><h1 className="mt-2 font-display text-4xl font-bold uppercase">Lat Pulldown</h1><p className="mt-2 text-xs text-muted-foreground">Station LP-014 · Floor 01</p>
         <LatPulldown className="mx-auto mt-4 h-56 w-full" />
         <div className="border-y border-border py-5 text-left"><div className="flex items-center justify-between"><div><p className="text-[10px] uppercase text-muted-foreground">Current workout</p><p className="mt-1 text-sm font-semibold">Anonymous member</p></div><span className="font-display text-2xl font-bold">2<span className="text-sm text-muted-foreground"> / 3 sets</span></span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full w-2/3 bg-quality-warn" /></div><div className="mt-3 flex justify-between text-[10px] text-muted-foreground"><span>Set 2 in progress</span><span>≈ 4 min remaining</span></div></div>
-        <div className="mt-5 flex gap-3 border border-border bg-card p-4 text-left"><Clock3 className="mt-0.5 size-5 shrink-0" /><p className="text-xs leading-relaxed text-muted-foreground">We'll refresh availability automatically. No personal workout details are shared.</p></div>
+        <div className="mt-5 flex gap-3 rounded-lg border border-border bg-card p-4 text-left"><Clock3 className="mt-0.5 size-5 shrink-0" /><p className="text-xs leading-relaxed text-muted-foreground">We'll refresh availability automatically. No personal workout details are shared.</p></div>
         <PrimaryButton className="mt-auto" onClick={() => go("scan")}><ScanLine /> Scan another machine</PrimaryButton>
       </div>
     </div>
@@ -618,7 +618,7 @@ export function SmartRepApp() {
         <p className="mt-8 text-[10px] font-bold uppercase text-muted-foreground">Interactive prototype</p>
         <nav className="mt-4 space-y-1" aria-label="Prototype screens">
           {screens.map((item) => (
-            <Button key={item.id} variant="ghost" onClick={() => go(item.id)} className={cn("h-11 w-full justify-start rounded-sm px-3 text-xs", screen === item.id ? "bg-accent text-foreground" : "text-muted-foreground")}>
+            <Button key={item.id} variant="ghost" onClick={() => go(item.id)} className={cn("h-11 w-full justify-start rounded-lg px-3 text-xs", screen === item.id ? "bg-accent text-foreground" : "text-muted-foreground")}>
               <span className="w-6 font-mono text-[9px]">{item.step}</span>{item.label}
             </Button>
           ))}
@@ -628,7 +628,7 @@ export function SmartRepApp() {
       <div>
         <div className="mx-auto hidden max-w-[390px] items-center justify-between pb-3 sm:flex lg:hidden">
           <p className="text-[10px] font-bold uppercase text-muted-foreground">Prototype screen</p>
-          <select value={screen} onChange={(event) => go(event.target.value as Screen)} className="border border-border bg-background px-3 py-2 text-xs outline-none">
+          <select value={screen} onChange={(event) => go(event.target.value as Screen)} className="rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none">
             {screens.map((item) => <option key={item.id} value={item.id}>{item.step} · {item.label}</option>)}
           </select>
         </div>

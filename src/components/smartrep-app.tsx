@@ -181,10 +181,12 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="relative min-h-full px-6 pb-8 pt-8">
-      <div className="pointer-events-none absolute -right-16 top-20 grid rotate-12 grid-cols-2 gap-4 opacity-[0.035]">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <img key={index} src={logoAsset.url} alt="" className="size-28" />
-        ))}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="grid h-full w-full grid-cols-6 grid-rows-12 place-items-center gap-3 p-2">
+          {Array.from({ length: 72 }).map((_, index) => (
+            <img key={index} src={logoAsset.url} alt="" className="size-12 opacity-50" />
+          ))}
+        </div>
       </div>
       <div className="relative flex min-h-[744px] flex-col">
         <Logo />

@@ -166,21 +166,13 @@ function PrimaryButton({ children, className, ...props }: ComponentProps<typeof 
   );
 }
 
-function LatPulldown({ className }: { className?: string }) {
+function LatPulldown({ className, faded = false }: { className?: string; faded?: boolean }) {
   return (
-    <svg viewBox="0 0 280 230" className={cn("text-foreground", className)} role="img" aria-label="Lat Pulldown machine illustration">
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <path strokeWidth="5" d="M57 205V26h132v179M40 205h170M76 26v38m94-38v38M45 64h156" />
-        <path strokeWidth="3" d="M123 64v19m-58 0h116M73 84l39 20m61-20-39 20M123 83v64" />
-        <circle cx="123" cy="89" r="7" strokeWidth="3" />
-        <path strokeWidth="5" d="M93 148h60v13H93zm13 13v28m34-28v28M90 190h66" />
-        <path strokeWidth="4" d="M186 64v104h-20m20-86h-20m20 17h-20m20 17h-20m20 17h-20m20 17h-20" />
-        <rect x="162" y="159" width="48" height="37" rx="3" strokeWidth="3" />
-        <path strokeWidth="2" d="M168 166h36m-36 7h36m-36 7h36m-36 7h36" />
-        <circle cx="219" cy="69" r="10" strokeWidth="3" />
-        <path strokeWidth="3" d="M186 64h23l10 5v118" />
-      </g>
-    </svg>
+    <img
+      src={latPulldownAsset.url}
+      alt="Lat Pulldown machine"
+      className={cn("object-contain invert", faded && "opacity-45", className)}
+    />
   );
 }
 

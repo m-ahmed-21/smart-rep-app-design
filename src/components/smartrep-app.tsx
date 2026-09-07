@@ -38,6 +38,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/smartrep-mark.svg.asset.json";
+import latPulldownAsset from "@/assets/lat-pulldown.png.asset.json";
 
 type Screen =
   | "auth"
@@ -165,21 +166,13 @@ function PrimaryButton({ children, className, ...props }: ComponentProps<typeof 
   );
 }
 
-function LatPulldown({ className }: { className?: string }) {
+function LatPulldown({ className, faded = false }: { className?: string; faded?: boolean }) {
   return (
-    <svg viewBox="0 0 280 230" className={cn("text-foreground", className)} role="img" aria-label="Lat Pulldown machine illustration">
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <path strokeWidth="5" d="M57 205V26h132v179M40 205h170M76 26v38m94-38v38M45 64h156" />
-        <path strokeWidth="3" d="M123 64v19m-58 0h116M73 84l39 20m61-20-39 20M123 83v64" />
-        <circle cx="123" cy="89" r="7" strokeWidth="3" />
-        <path strokeWidth="5" d="M93 148h60v13H93zm13 13v28m34-28v28M90 190h66" />
-        <path strokeWidth="4" d="M186 64v104h-20m20-86h-20m20 17h-20m20 17h-20m20 17h-20m20 17h-20" />
-        <rect x="162" y="159" width="48" height="37" rx="3" strokeWidth="3" />
-        <path strokeWidth="2" d="M168 166h36m-36 7h36m-36 7h36m-36 7h36" />
-        <circle cx="219" cy="69" r="10" strokeWidth="3" />
-        <path strokeWidth="3" d="M186 64h23l10 5v118" />
-      </g>
-    </svg>
+    <img
+      src={latPulldownAsset.url}
+      alt="Lat Pulldown machine"
+      className={cn("object-contain invert", faded && "opacity-45", className)}
+    />
   );
 }
 
@@ -261,7 +254,7 @@ function ScanScreen({ go }: { go: (screen: Screen) => void }) {
       <div className="px-5">
         <div className="relative h-[500px] overflow-hidden rounded-sm bg-camera">
           <div className="absolute inset-0 camera-grid opacity-40" />
-          <LatPulldown className="absolute left-1/2 top-20 w-[330px] -translate-x-1/2 text-muted-foreground/45" />
+          <LatPulldown faded className="absolute left-1/2 top-20 w-[330px] -translate-x-1/2" />
           <div className="absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 scan-frame">
             <div className="scan-line" />
             <div className="absolute inset-12 grid place-items-center border border-foreground/20 bg-background/60 backdrop-blur-sm">
@@ -426,7 +419,7 @@ function CalibrationScreen({ go }: { go: (screen: Screen) => void }) {
           <div className="h-full bg-foreground transition-all duration-500" style={{ width: `${Math.min(rep / 5, 1) * 100}%` }} />
         </div>
         <div className="relative mt-8 flex h-[350px] items-center justify-center border-y border-border">
-          <LatPulldown className="h-64 w-64 text-muted-foreground" />
+          <LatPulldown className="h-64 w-64" />
           <div className="absolute right-4 top-8 flex h-64 items-center gap-3">
             <div className="relative h-full w-3 rounded-full bg-secondary">
               <div className="absolute bottom-0 left-0 w-full rounded-full bg-foreground transition-all duration-500" style={{ height: `${20 + (rep % 5) * 17}%` }} />
@@ -612,7 +605,7 @@ function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
       <div className="flex flex-1 flex-col px-6 pb-7 text-center">
         <div className="mx-auto mt-7 grid size-20 place-items-center rounded-full bg-quality-warn/10"><LockKeyhole className="size-9 text-quality-warn" /></div>
         <p className="mt-5 text-xs font-bold uppercase text-quality-warn">Currently reserved</p><h1 className="mt-2 font-display text-4xl font-bold uppercase">Lat Pulldown</h1><p className="mt-2 text-xs text-muted-foreground">Station LP-014 · Floor 01</p>
-        <LatPulldown className="mx-auto mt-4 h-56 w-full text-muted-foreground" />
+        <LatPulldown className="mx-auto mt-4 h-56 w-full" />
         <div className="border-y border-border py-5 text-left"><div className="flex items-center justify-between"><div><p className="text-[10px] uppercase text-muted-foreground">Current workout</p><p className="mt-1 text-sm font-semibold">Anonymous member</p></div><span className="font-display text-2xl font-bold">2<span className="text-sm text-muted-foreground"> / 3 sets</span></span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full w-2/3 bg-quality-warn" /></div><div className="mt-3 flex justify-between text-[10px] text-muted-foreground"><span>Set 2 in progress</span><span>≈ 4 min remaining</span></div></div>
         <div className="mt-5 flex gap-3 border border-border bg-card p-4 text-left"><Clock3 className="mt-0.5 size-5 shrink-0" /><p className="text-xs leading-relaxed text-muted-foreground">We'll refresh availability automatically. No personal workout details are shared.</p></div>
         <PrimaryButton className="mt-auto" onClick={() => go("scan")}><ScanLine /> Scan another machine</PrimaryButton>

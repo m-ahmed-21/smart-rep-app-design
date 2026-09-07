@@ -254,7 +254,6 @@ function ScanScreen({ go }: { go: (screen: Screen) => void }) {
       <div className="px-5">
         <div className="relative h-[500px] overflow-hidden rounded-sm bg-camera">
           <div className="absolute inset-0 camera-grid opacity-40" />
-          <LatPulldown faded className="absolute left-1/2 top-20 w-[330px] -translate-x-1/2" />
           <div className="absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 scan-frame">
             <div className="scan-line" />
             <div className="absolute inset-12 grid place-items-center border border-foreground/20 bg-background/60 backdrop-blur-sm">
@@ -419,7 +418,7 @@ function CalibrationScreen({ go }: { go: (screen: Screen) => void }) {
           <div className="h-full bg-foreground transition-all duration-500" style={{ width: `${Math.min(rep / 5, 1) * 100}%` }} />
         </div>
         <div className="relative mt-8 flex h-[350px] items-center justify-center border-y border-border">
-          <LatPulldown className="h-64 w-64" />
+          <LatPulldown className="h-48 w-48" />
           <div className="absolute right-4 top-8 flex h-64 items-center gap-3">
             <div className="relative h-full w-3 rounded-full bg-secondary">
               <div className="absolute bottom-0 left-0 w-full rounded-full bg-foreground transition-all duration-500" style={{ height: `${20 + (rep % 5) * 17}%` }} />

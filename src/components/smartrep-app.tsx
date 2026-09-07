@@ -187,6 +187,10 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
             <img key={index} src={logoAsset.url} alt="" className="size-10 opacity-50" />
           ))}
         </div>
+        {/* Fade out logos behind the SmartRep logo/tagline (top-left) */}
+        <div className="absolute -left-4 top-0 h-44 w-64 bg-gradient-to-br from-background via-background/90 to-transparent" />
+        {/* Fade out logos behind the form content (bottom) */}
+        <div className="absolute inset-x-0 bottom-0 h-[78%] bg-gradient-to-t from-background via-background/95 to-transparent" />
       </div>
       <div className="relative flex min-h-[744px] flex-col">
         <Logo />

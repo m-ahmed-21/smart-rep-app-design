@@ -38,7 +38,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/smartrep-mark.svg.asset.json";
-import latPulldownAsset from "@/assets/lat-pulldown-flaticon.png.asset.json";
+import latPulldownAsset from "@/assets/lat-pulldown-clean.png.asset.json";
 
 type Screen =
   | "splash"

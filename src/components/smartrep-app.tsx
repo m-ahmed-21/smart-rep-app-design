@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import {
   Activity,
   ArrowLeft,
@@ -82,14 +82,16 @@ const nextScreen: Partial<Record<Screen, Screen>> = {
 
 function SplashScreen({ go }: { go: (screen: Screen) => void }) {
   const [progress, setProgress] = useState(6);
+  const goRef = useRef(go);
+  goRef.current = go;
   useEffect(() => {
     const tick = setInterval(() => setProgress((value) => Math.min(100, value + 4)), 70);
-    const done = setTimeout(() => go("auth"), 2400);
+    const done = setTimeout(() => goRef.current("auth"), 2400);
     return () => {
       clearInterval(tick);
       clearTimeout(done);
     };
-  }, [go]);
+  }, []);
 
   return (
     <div className="relative flex min-h-full flex-col items-center justify-center overflow-hidden px-8 pb-12">

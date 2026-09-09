@@ -41,6 +41,7 @@ import logoAsset from "@/assets/smartrep-mark.svg.asset.json";
 import latPulldownAsset from "@/assets/lat-pulldown-flaticon.png.asset.json";
 
 type Screen =
+  | "splash"
   | "auth"
   | "scan"
   | "connecting"
@@ -53,6 +54,7 @@ type Screen =
   | "unavailable";
 
 const screens: { id: Screen; label: string; step: string }[] = [
+  { id: "splash", label: "Splash", step: "00" },
   { id: "auth", label: "Sign in", step: "01" },
   { id: "scan", label: "Scan machine", step: "02" },
   { id: "connecting", label: "BLE connection", step: "03" },
@@ -66,6 +68,7 @@ const screens: { id: Screen; label: string; step: string }[] = [
 ];
 
 const nextScreen: Partial<Record<Screen, Screen>> = {
+  splash: "auth",
   auth: "scan",
   scan: "connecting",
   connecting: "reservation",
@@ -76,6 +79,40 @@ const nextScreen: Partial<Record<Screen, Screen>> = {
   summary: "profile",
   unavailable: "scan",
 };
+
+function SplashScreen({ go }: { go: (screen: Screen) => void }) {
+  const [progress, setProgress] = useState(6);
+  useEffect(() => {
+    const tick = setInterval(() => setProgress((value) => Math.min(100, value + 4)), 70);
+    const done = setTimeout(() => go("auth"), 2400);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(done);
+    };
+  }, [go]);
+
+  return (
+    <div className="relative flex min-h-full flex-col items-center justify-center overflow-hidden px-8 pb-12">
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--foreground)_11%,transparent),transparent_65%)]" />
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border border-border opacity-40 [animation-duration:2.8s]" />
+      <div className="relative flex flex-col items-center text-center">
+        <img src={logoAsset.url} alt="SmartRep" className="size-24 shrink-0" />
+        <div className="mt-5 font-display text-5xl font-bold leading-none">
+          SMART<span className="text-muted-foreground">REP</span>
+        </div>
+        <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground">Move with intent</p>
+      </div>
+      <div className="absolute inset-x-10 bottom-16">
+        <div className="h-[3px] w-full overflow-hidden rounded-full bg-secondary">
+          <div className="h-full rounded-full bg-foreground transition-all duration-100 ease-out" style={{ width: `${progress}%` }} />
+        </div>
+        <div className="mt-3 flex items-center justify-center gap-2 text-[10px] font-semibold uppercase text-muted-foreground">
+          <Bluetooth className="size-3.5" /> Preparing sensors
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
@@ -609,7 +646,7 @@ function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
 }
 
 export function SmartRepApp() {
-  const [screen, setScreen] = useState<Screen>("auth");
+  const [screen, setScreen] = useState<Screen>("splash");
   const go = (target: Screen) => setScreen(target);
   return (
     <div className="min-h-screen bg-stage px-0 py-0 sm:px-6 sm:py-8 lg:grid lg:grid-cols-[260px_1fr] lg:items-start lg:gap-8 lg:px-10">
@@ -633,6 +670,7 @@ export function SmartRepApp() {
           </select>
         </div>
         <PhoneShell>
+          {screen === "splash" && <SplashScreen go={go} />}
           {screen === "auth" && <AuthScreen go={go} />}
           {screen === "scan" && <ScanScreen go={go} />}
           {screen === "connecting" && <ConnectingScreen go={go} />}

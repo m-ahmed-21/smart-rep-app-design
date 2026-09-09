@@ -220,9 +220,9 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="relative min-h-full px-6 pb-8 pt-8">
-      <div className="relative flex min-h-[744px] flex-col">
+      <div className="relative flex min-h-full flex-col items-center justify-center">
         <Logo />
-        <div className="mt-auto">
+        <div className="mt-8 w-full">
           <p className="text-xs font-bold uppercase text-muted-foreground">Your strongest rep starts here</p>
           <h1 className="mt-3 max-w-xs font-display text-5xl font-bold leading-[0.92] uppercase">
             Train with<br />precision.

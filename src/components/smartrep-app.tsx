@@ -100,9 +100,9 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border border-border opacity-40 [animation-duration:2.8s]" />
       <div className="-translate-y-[25px]">
         <div className="relative">
-          <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(33,150,243,0.22),transparent_70%)]" />
+          <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(82,82,82,0.22),transparent_70%)]" />
           <div className="relative">
-            <Logo large />
+            <Logo large muted />
           </div>
         </div>
       </div>
@@ -234,7 +234,7 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
   return (
     <div className="relative min-h-full px-6 pb-8 pt-8">
       <div className="relative flex min-h-[744px] flex-col">
-        <Logo large shifted />
+        <Logo large shifted muted />
         <div className="mt-auto">
           <div className="mb-6 text-center">
             <p className="text-sm font-bold uppercase text-muted-foreground">

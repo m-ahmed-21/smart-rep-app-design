@@ -38,6 +38,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/smartrep-mark-blue-3.svg";
+import logoGrayAsset from "@/assets/smartrep-mark-gray.svg";
 import latPulldownAsset from "@/assets/lat-pulldown-clean.png";
 
 type Screen =

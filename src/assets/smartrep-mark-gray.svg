@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_2049_100)">
+<g filter="url(#seam-repair)">
+<path d="M198.473 172.024H138.497V75.6988C138.497 62.058 149.685 51 163.487 51H198.473V172.024Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M313.427 337.506H373.403V436.301C373.403 449.942 362.215 461 348.413 461H313.427V337.506Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M313.427 337.506V283.169H373.403V337.506H313.427Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M373.403 283.169H313.427V226.361L373.403 283.169Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M143.495 228.831L138.497 226.361V172.024H198.473V228.831H143.495Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M198.473 226.361V283.169L138.497 226.361L198.473 226.361Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M198.473 226.361H313.427V283.169H198.473V226.361Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M138.589 382.952H201.38V406.663H138.589V382.952Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M169.984 347.386L209.968 382.952H130L169.984 347.386Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M310.62 105.337H373.411V129.048H310.62V105.337Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M342.016 164.614L302.032 129.048H382L342.016 164.614Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M198.473 105.337V51H348.413C362.215 51 373.403 62.058 373.403 75.6988V105.337H198.473Z" fill="#525252" style="fill:#525252;fill-opacity:1;"/>
+<path d="M313.427 461V406.663H138.497V436.301C138.497 449.942 149.685 461 163.487 461H313.427Z" fill="white" style="fill:white;fill-opacity:1;"/>
+</g>
+</g>
+<defs>
+<filter id="seam-repair" x="-2" y="-2" width="516" height="516" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feMorphology in="SourceGraphic" operator="dilate" radius="0.8"/>
+</filter>
+<clipPath id="clip0_2049_100">
+<rect width="512" height="512" fill="white" style="fill:white;fill-opacity:1;"/>
+</clipPath>
+</defs>
+</svg>

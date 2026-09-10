@@ -98,7 +98,12 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--foreground)_11%,transparent),transparent_65%)]" />
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border border-border opacity-40 [animation-duration:2.8s]" />
       <div className="-translate-y-[25px]">
-        <Logo large />
+        <div className="relative">
+          <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(33,150,243,0.22),transparent_70%)]" />
+          <div className="relative rounded-[2rem] bg-gradient-to-b from-white/[0.12] to-white/[0.05] p-8 ring-1 ring-white/10 backdrop-blur-sm">
+            <Logo large />
+          </div>
+        </div>
       </div>
       <div className="absolute inset-x-10 bottom-16">
         <div className="h-[3px] w-full overflow-hidden rounded-full bg-secondary">

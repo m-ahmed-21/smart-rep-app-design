@@ -100,7 +100,7 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
       <div className="-translate-y-[25px]">
         <div className="relative">
           <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(33,150,243,0.22),transparent_70%)]" />
-          <div className="relative rounded-[2rem] bg-gradient-to-b from-white/[0.12] to-white/[0.05] p-8 ring-1 ring-white/10 backdrop-blur-sm">
+          <div className="relative">
             <Logo large />
           </div>
         </div>

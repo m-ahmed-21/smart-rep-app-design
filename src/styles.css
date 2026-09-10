@@ -196,6 +196,120 @@
   animation: scan 2.4s ease-in-out infinite;
 }
 
+.auth-form-transition {
+  animation: auth-form-enter 380ms ease-out both;
+}
+
+.bluetooth-signal {
+  position: absolute;
+  width: 72px;
+  height: 42px;
+  color: #2196f3;
+}
+
+.bluetooth-signal-arc {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: block;
+  isolation: isolate;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  opacity: 0.9;
+  transform: translateX(-50%);
+}
+
+.bluetooth-signal-arc::before,
+.bluetooth-signal-arc::after {
+  position: absolute;
+  top: auto;
+  bottom: -4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+}
+
+.bluetooth-signal-arc::before {
+  left: -4px;
+}
+
+.bluetooth-signal-arc::after {
+  right: -4px;
+}
+
+.bluetooth-signal-arc-wide {
+  width: 76px;
+  height: 38px;
+}
+
+.bluetooth-signal-arc-mid {
+  width: 52px;
+  height: 28px;
+  bottom: 10px;
+}
+
+.bluetooth-signal-arc-inner {
+  width: 28px;
+  height: 18px;
+  bottom: 20px;
+}
+
+.auth-primary-action {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.auth-primary-action-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: auth-action-content-enter 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.auth-primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-alert);
+}
+
+.auth-primary-action:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.auth-tab:hover {
+  background-color: var(--accent);
+}
+
+.auth-signup-row {
+  display: grid;
+  transition: grid-template-rows 380ms ease, opacity 380ms ease;
+}
+
+.auth-signup-row > div {
+  overflow: hidden;
+}
+
+.auth-signup-row-expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.auth-signup-row-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+@keyframes auth-form-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes auth-action-content-enter {
+  from { filter: blur(2px); transform: translateY(4px) scale(0.985); }
+  to { filter: blur(0); transform: translateY(0) scale(1); }
+}
+
 @keyframes scan {
   0%, 100% { top: 14px; opacity: 0.35; }
   50% { top: calc(100% - 14px); opacity: 1; }

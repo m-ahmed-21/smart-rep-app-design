@@ -118,7 +118,7 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
   );
 }
 
-function Logo({ compact = false, large = false, shifted = false }: { compact?: boolean; large?: boolean; shifted?: boolean }) {
+function Logo({ compact = false, large = false, shifted = false, muted = false }: { compact?: boolean; large?: boolean; shifted?: boolean; muted?: boolean }) {
   return (
     <div className={cn("flex", large ? cn("relative flex-col items-center", shifted ? "top-[70px]" : "top-10") : "items-center gap-3")}>
       {large && (
@@ -129,13 +129,13 @@ function Logo({ compact = false, large = false, shifted = false }: { compact?: b
         </div>
       )}
       <img
-        src={logoAsset}
+        src={muted ? logoGrayAsset : logoAsset}
         alt="SmartRep"
         className={cn("shrink-0", compact ? "size-9" : large ? "size-24" : "size-16")}
       />
       <div className={cn(large && "mt-1 text-center")}>
         <div className={cn("font-display font-bold leading-none", compact ? "text-xl" : large ? "text-5xl" : "text-3xl")}>
-          <span className="text-[#2196F3]">SMART</span><span className="text-white">REP</span>
+          <span className={muted ? "text-[#525252]" : "text-[#2196F3]"}>SMART</span><span className="text-white">REP</span>
         </div>
         {large && <p className="mt-2 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Lift smart, not hard</p>}
       </div>

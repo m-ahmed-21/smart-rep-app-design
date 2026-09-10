@@ -37,8 +37,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logoAsset from "@/assets/smartrep-mark.svg.asset.json";
-import latPulldownAsset from "@/assets/lat-pulldown-clean.png.asset.json";
+import logoAsset from "@/assets/smartrep-mark-blue-3.svg";
+import latPulldownAsset from "@/assets/lat-pulldown-clean.png";
 
 type Screen =
   | "splash"
@@ -84,25 +84,21 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
   const [progress, setProgress] = useState(6);
   const goRef = useRef(go);
   goRef.current = go;
-  useEffect(() => {
+  /* useEffect(() => {
     const tick = setInterval(() => setProgress((value) => Math.min(100, value + 4)), 70);
     const done = setTimeout(() => goRef.current("auth"), 2400);
     return () => {
       clearInterval(tick);
       clearTimeout(done);
     };
-  }, []);
+  }, []); */
 
   return (
     <div className="relative flex min-h-full flex-col items-center justify-center overflow-hidden px-8 pb-12">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--foreground)_11%,transparent),transparent_65%)]" />
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border border-border opacity-40 [animation-duration:2.8s]" />
-      <div className="relative flex flex-col items-center text-center">
-        <img src={logoAsset.url} alt="SmartRep" className="size-24 shrink-0" />
-        <div className="mt-5 font-display text-5xl font-bold leading-none">
-          SMART<span className="text-muted-foreground">REP</span>
-        </div>
-        <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground">Move with intent</p>
+      <div className="-translate-y-[25px]">
+        <Logo large />
       </div>
       <div className="absolute inset-x-10 bottom-16">
         <div className="h-[3px] w-full overflow-hidden rounded-full bg-secondary">
@@ -116,15 +112,26 @@ function SplashScreen({ go }: { go: (screen: Screen) => void }) {
   );
 }
 
-function Logo({ compact = false }: { compact?: boolean }) {
+function Logo({ compact = false, large = false, shifted = false }: { compact?: boolean; large?: boolean; shifted?: boolean }) {
   return (
-    <div className="flex items-center gap-3">
-      <img src={logoAsset.url} alt="SmartRep" className={cn("shrink-0", compact ? "size-9" : "size-16")} />
-      <div>
-        <div className={cn("font-display font-bold leading-none", compact ? "text-xl" : "text-3xl")}>
-          SMART<span className="text-muted-foreground">REP</span>
+    <div className={cn("flex", large ? cn("relative flex-col items-center", shifted ? "top-[70px]" : "top-10") : "items-center gap-3")}>
+      {large && (
+        <div aria-hidden className="bluetooth-signal absolute -top-9 left-1/2 -translate-x-1/2">
+          <span className="bluetooth-signal-arc bluetooth-signal-arc-wide" />
+          <span className="bluetooth-signal-arc bluetooth-signal-arc-mid" />
+          <span className="bluetooth-signal-arc bluetooth-signal-arc-inner" />
         </div>
-        {!compact && <p className="mt-1 text-xs uppercase text-muted-foreground">Move with intent</p>}
+      )}
+      <img
+        src={logoAsset}
+        alt="SmartRep"
+        className={cn("shrink-0", compact ? "size-9" : large ? "size-24" : "size-16")}
+      />
+      <div className={cn(large && "mt-1 text-center")}>
+        <div className={cn("font-display font-bold leading-none", compact ? "text-xl" : large ? "text-5xl" : "text-3xl")}>
+          <span className="text-[#2196F3]">SMART</span><span className="text-white">REP</span>
+        </div>
+        {large && <p className="mt-2 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Lift smart, not hard</p>}
       </div>
     </div>
   );
@@ -208,7 +215,7 @@ function PrimaryButton({ children, className, ...props }: ComponentProps<typeof 
 function LatPulldown({ className, faded = false }: { className?: string; faded?: boolean }) {
   return (
     <img
-      src={latPulldownAsset.url}
+      src={latPulldownAsset}
       alt="Lat Pulldown machine"
       className={cn("object-contain", faded && "opacity-45", className)}
     />
@@ -221,49 +228,59 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
   return (
     <div className="relative min-h-full px-6 pb-8 pt-8">
       <div className="relative flex min-h-[744px] flex-col">
-        <Logo />
+        <Logo large shifted />
         <div className="mt-auto">
-          <p className="text-xs font-bold uppercase text-muted-foreground">Your strongest rep starts here</p>
-          <h1 className="mt-3 max-w-xs font-display text-5xl font-bold leading-[0.92] uppercase">
-            Train with<br />precision.
-          </h1>
-          <div className="mt-8 grid grid-cols-2 border-b border-border">
-            {(["login", "signup"] as const).map((item) => (
-              <Button
-                key={item}
-                variant="ghost"
-                onClick={() => setMode(item)}
-                className={cn(
-                  "h-11 rounded-none border-b-2 text-xs uppercase",
-                  mode === item ? "border-foreground text-foreground" : "border-transparent text-muted-foreground",
-                )}
-              >
-                {item === "login" ? "Sign in" : "Create account"}
-              </Button>
-            ))}
+          <div className="mb-6 text-center">
+            <p className="text-sm font-bold uppercase text-muted-foreground">
+              Your <strong className="mr-1 text-foreground/80"><em>strongest</em></strong>{" "}rep starts here.
+            </p>
           </div>
-          <div className="mt-6 space-y-3">
-            {mode === "signup" && <Field icon={UserRound} label="Full name" value="Muhammad Umar" />}
-            <Field icon={Phone} label="Phone number" value="+92 300 1234567" />
-            <div className="relative">
-              <Field icon={LockKeyhole} label="Password" value={showPassword ? "smartrep26" : "••••••••••"} />
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full text-muted-foreground"
-                onClick={() => setShowPassword((value) => !value)}
-              >
-                {showPassword ? <EyeOff /> : <Eye />}
-              </Button>
+          <div className="-mx-6 border-t border-border bg-background px-6 pb-3 pt-0">
+              <div className="relative -mx-6 grid grid-cols-2 border-b border-border">
+              {["login", "signup"].map((item) => (
+                <Button
+                  key={item}
+                  variant="ghost"
+                  onClick={() => setMode(item as "login" | "signup")}
+                  className={cn(
+                    "auth-tab h-14 rounded-none border-b-2 text-xs uppercase transition-colors duration-200",
+                    mode === item ? "border-foreground text-foreground" : "border-transparent text-muted-foreground",
+                  )}
+                >
+                  {item === "login" ? "Sign in" : "Create account"}
+                </Button>
+              ))}
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border" />
             </div>
+            <div className="auth-form-transition mt-3 space-y-2.5">
+              <div className={cn("auth-signup-row", mode === "signup" ? "auth-signup-row-expanded" : "auth-signup-row-collapsed")}>
+                <div>
+                  <Field icon={UserRound} label="Full name" value="Muhammad Umar" />
+                </div>
+              </div>
+              <Field icon={Phone} label="Phone number" value="+92 300 1234567" />
+              <div className="relative">
+                <Field icon={LockKeyhole} label="Password" value={showPassword ? "smartrep26" : "••••••••••"} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full text-muted-foreground"
+                  onClick={() => setShowPassword((value) => !value)}
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </Button>
+              </div>
+            </div>
+            <PrimaryButton className="auth-primary-action mt-4" onClick={() => go("scan")}>
+              <span key={mode} className="auth-primary-action-content">
+                {mode === "login" ? "Continue" : "Create account"} <ChevronRight />
+              </span>
+            </PrimaryButton>
+            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+              By continuing, you agree to SmartRep's Terms and Privacy Policy.
+            </p>
           </div>
-          <PrimaryButton className="mt-5" onClick={() => go("scan")}>
-            {mode === "login" ? "Continue" : "Create account"} <ChevronRight />
-          </PrimaryButton>
-          <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
-            By continuing, you agree to SmartRep's Terms and Privacy Policy.
-          </p>
         </div>
       </div>
     </div>

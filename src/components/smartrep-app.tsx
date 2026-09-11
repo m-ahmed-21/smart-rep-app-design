@@ -81,48 +81,55 @@ const nextScreen: Partial<Record<Screen, Screen>> = {
   unavailable: "scan",
 };
 
-function SplashScreen({ go }: { go: (screen: Screen) => void }) {
-  const [progress, setProgress] = useState(6);
-  const goRef = useRef(go);
-  goRef.current = go;
-  /* useEffect(() => {
-    const tick = setInterval(() => setProgress((value) => Math.min(100, value + 4)), 70);
-    const done = setTimeout(() => goRef.current("auth"), 2400);
-    return () => {
-      clearInterval(tick);
-      clearTimeout(done);
-    };
-  }, []); */
-
+function SplashScreen({ go: _go }: { go: (screen: Screen) => void }) {
   return (
     <div className="relative flex min-h-full flex-col items-center justify-center overflow-hidden px-8 pb-12">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--foreground)_11%,transparent),transparent_65%)]" />
-      <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border border-border opacity-40 [animation-duration:2.8s]" />
       <div className="-translate-y-[25px]">
         <div className="relative">
-          <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(82,82,82,0.22),transparent_70%)]" />
-          <div className="relative">
-            <Logo large muted />
-          </div>
-        </div>
-      </div>
-      <div className="absolute inset-x-10 bottom-16">
-        <div className="h-[3px] w-full overflow-hidden rounded-full bg-secondary">
-          <div className="h-full rounded-full bg-foreground transition-all duration-100 ease-out" style={{ width: `${progress}%` }} />
-        </div>
-        <div className="mt-3 flex items-center justify-center gap-2 text-[10px] font-semibold uppercase text-muted-foreground">
-          <Bluetooth className="size-3.5" /> Preparing sensors
+          <Logo large muted animatedSignal />
         </div>
       </div>
     </div>
   );
 }
 
-function Logo({ compact = false, large = false, shifted = false, muted = false }: { compact?: boolean; large?: boolean; shifted?: boolean; muted?: boolean }) {
+function Logo({
+  compact = false,
+  large = false,
+  shifted = false,
+  muted = true,
+  centered = false,
+  animatedSignal = false,
+}: {
+  compact?: boolean;
+  large?: boolean;
+  shifted?: boolean;
+  muted?: boolean;
+  centered?: boolean;
+  animatedSignal?: boolean;
+}) {
   return (
-    <div className={cn("flex", large ? cn("relative flex-col items-center", shifted ? "top-[70px]" : "top-10") : "items-center gap-3")}>
+    <div
+      className={cn(
+        "flex",
+        large
+          ? cn(
+              "relative flex-col items-center",
+              centered ? "pt-9" : shifted ? "top-[70px]" : "top-10",
+            )
+          : "items-center gap-3",
+      )}
+    >
       {large && (
-        <div aria-hidden className="bluetooth-signal absolute -top-9 left-1/2 -translate-x-1/2">
+        <div
+          aria-hidden
+          className={cn(
+            "bluetooth-signal absolute left-1/2 -translate-x-1/2",
+            centered ? "top-0" : "-top-9",
+            animatedSignal && "bluetooth-signal-animated",
+          )}
+        >
           <span className="bluetooth-signal-arc bluetooth-signal-arc-wide" />
           <span className="bluetooth-signal-arc bluetooth-signal-arc-mid" />
           <span className="bluetooth-signal-arc bluetooth-signal-arc-inner" />
@@ -232,17 +239,13 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <div className="relative min-h-full px-6 pb-8 pt-8">
-      <div className="relative flex min-h-[744px] flex-col">
-        <Logo large shifted muted />
-        <div className="mt-auto">
-          <div className="mb-6 text-center">
-            <p className="text-sm font-bold uppercase text-muted-foreground">
-              Your <strong className="mr-1 text-foreground/80"><em>strongest</em></strong>{" "}rep starts here.
-            </p>
-          </div>
-          <div className="-mx-6 border-t border-border bg-background px-6 pb-3 pt-0">
-              <div className="relative -mx-6 grid grid-cols-2 border-b border-border">
+    <div className="relative flex min-h-full flex-col px-6 pb-8">
+      <div className="flex flex-1 items-center justify-center">
+        <Logo large muted centered />
+      </div>
+      <div>
+        <div className="-mx-6 border-t border-border bg-background px-6 pb-3 pt-0">
+          <div className="relative -mx-6 grid grid-cols-2 border-b border-border">
               {["login", "signup"].map((item) => (
                 <Button
                   key={item}
@@ -289,9 +292,8 @@ function AuthScreen({ go }: { go: (screen: Screen) => void }) {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 function Field({ icon: Icon, label, value }: { icon: typeof Phone; label: string; value: string }) {
   return (
@@ -505,12 +507,12 @@ function RomBar({ value }: { value: number }) {
   return (
     <div className="flex h-64 items-center gap-4">
       <div className="relative h-full w-9 rounded-full border border-border bg-secondary p-1">
-        <div className="grid h-full grid-rows-4 overflow-hidden rounded-full opacity-85">
-          <div className="bg-quality-poor" /><div className="bg-quality-warn" /><div className="bg-quality-good" /><div className="bg-quality-poor" />
+        <div className="grid h-full grid-rows-4 overflow-hidden rounded-full">
+          <div className="bg-quality-good" /><div style={{ backgroundColor: 'var(--quality-warn)' }} /><div style={{ backgroundColor: '#f97316' }} /><div className="bg-quality-poor" />
         </div>
         <div className="absolute left-1/2 z-10 size-7 -translate-x-1/2 translate-y-1/2 rounded-full border-[6px] border-background bg-foreground shadow-ring transition-all duration-700" style={{ bottom: `${value}%` }} />
       </div>
-      <div className="flex h-full flex-col justify-between py-1 text-[9px] font-bold uppercase text-muted-foreground"><span>Maximum</span><span>Target range</span><span>Minimum</span></div>
+      <div className="flex h-full flex-col justify-between py-1 text-[9px] font-bold uppercase text-muted-foreground"><span>Maximum</span><span>Good</span><span>Fair</span><span>Poor</span></div>
     </div>
   );
 }
@@ -519,12 +521,41 @@ function SpeedGauge({ speed }: { speed: number }) {
   const angle = -70 + Math.min(speed / 1.8, 1) * 140;
   const status = speed < 0.55 ? "Too slow" : speed < 0.8 ? "Slow" : speed <= 1.25 ? "Ideal" : speed <= 1.5 ? "Fast" : "Too fast";
   const qualityClass = status === "Ideal" ? "text-quality-good" : status === "Slow" || status === "Fast" ? "text-quality-warn" : "text-quality-poor";
+  // Arc from -110° to +110° (220° sweep). Five equal segments of 44° each.
+  // Using SVG arc helpers: cx=90, cy=90, r=65
+  const r = 65, cx = 90, cy = 90;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const arcPath = (startDeg: number, endDeg: number) => {
+    const s = { x: cx + r * Math.cos(toRad(startDeg)), y: cy + r * Math.sin(toRad(startDeg)) };
+    const e = { x: cx + r * Math.cos(toRad(endDeg)), y: cy + r * Math.sin(toRad(endDeg)) };
+    return `M${s.x.toFixed(2)} ${s.y.toFixed(2)} A${r} ${r} 0 0 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+  };
+  // Full arc: 180° → 360° = 180° sweep. Five equal segments of 36° each.
+  const segColors = ['var(--quality-poor)', 'var(--quality-warn)', 'var(--quality-good)', 'var(--quality-warn)', 'var(--quality-poor)'];
+  const segStart = 180;
+  const segWidth = 36;
   return (
     <div className="text-center">
       <svg viewBox="0 0 180 110" className="mx-auto w-full max-w-44" aria-label={`Speed ${speed.toFixed(2)} meters per second, ${status}`}>
+        {/* Background track */}
         <path d="M25 90a65 65 0 0 1 130 0" fill="none" stroke="var(--secondary)" strokeWidth="15" strokeLinecap="round" />
-        <path d="M39 52a65 65 0 0 1 102 0" fill="none" stroke="var(--quality-good)" strokeWidth="15" strokeLinecap="butt" />
-        <g transform={`rotate(${angle} 90 90)`} className="transition-transform duration-700"><path d="M90 90L86 38h8z" fill="currentColor" /><circle cx="90" cy="90" r="8" fill="var(--foreground)" /></g>
+        {/* Five color segments covering the full arc, with rounded caps only on the outer ends */}
+        {segColors.map((color, i) => (
+          <path
+            key={i}
+            d={arcPath(segStart + i * segWidth, segStart + (i + 1) * segWidth)}
+            fill="none"
+            stroke={color}
+            strokeWidth="15"
+            strokeLinecap={i === 0 || i === segColors.length - 1 ? 'round' : 'butt'}
+            opacity="0.85"
+          />
+        ))}
+        {/* Needle */}
+        <g transform={`rotate(${angle} 90 90)`} className="transition-transform duration-700">
+          <path d="M90 90L86 38h8z" fill="currentColor" />
+          <circle cx="90" cy="90" r="8" fill="var(--foreground)" />
+        </g>
       </svg>
       <p className="-mt-4 font-display text-3xl font-bold">{speed.toFixed(2)}<span className="ml-1 text-xs text-muted-foreground">m/s</span></p>
       <p className={cn("mt-1 text-xs font-bold uppercase", qualityClass)}>{status}</p>
@@ -557,7 +588,7 @@ function TrackingScreen({ go }: { go: (screen: Screen) => void }) {
       <div className="px-5">
         <div className="flex items-end justify-between border-b border-border pb-5 pt-2">
           <div>
-            <p className="text-[10px] font-bold uppercase text-muted-foreground">Set 2 of 3</p>
+            <p className="text-[12px] font-bold uppercase text-muted-foreground">Set 2 of 3</p>
             <p className="font-display text-[88px] font-bold leading-[0.82]">{rep}<span className="text-2xl text-muted-foreground">/10</span></p>
           </div>
           <div className="pb-1 text-right"><p className="text-[10px] uppercase text-muted-foreground">Last rep</p><p className="mt-1 text-sm font-bold text-quality-good">GOOD · 87</p><p className="mt-1 text-[10px] text-quality-good">+3 vs previous</p></div>
@@ -567,10 +598,10 @@ function TrackingScreen({ go }: { go: (screen: Screen) => void }) {
             <div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-bold uppercase text-muted-foreground">Range of motion</p><p className="mt-1 font-display text-4xl font-bold">{data.rom}%</p></div><span className={cn("text-[10px] font-bold", data.rom > 80 ? "text-quality-good" : "text-quality-warn")}>{data.rom > 80 ? "+2%" : "−8%"}</span></div>
             <RomBar value={Math.max(18, Math.min(data.rom, 92))} />
           </div>
-          <div className="border-l border-border pl-4">
+          <div className="flex flex-col border-l border-border pl-4">
             <p className="text-[10px] font-bold uppercase text-muted-foreground">Rep speed</p>
             <SpeedGauge speed={data.speed} />
-            <div className="mt-6 border-t border-border pt-4">
+            <div className="mt-8 border-t border-border pt-5 pb-1">
               <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase text-muted-foreground">Top pause</span><span className="font-display text-2xl font-bold">0.8<span className="text-xs text-muted-foreground">s</span></span></div>
               <div className="mt-2 flex gap-1"><span className="h-1 flex-[2] bg-quality-good" /><span className="h-1 flex-1 bg-secondary" /><span className="h-1 flex-1 bg-secondary" /></div>
               <p className="mt-2 text-[10px] font-bold uppercase text-quality-good">Pause held</p>

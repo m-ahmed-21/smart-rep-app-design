@@ -93,9 +93,9 @@
   --ring: oklch(0.72 0 0);
   --stage: oklch(0.075 0 0);
   --camera: oklch(0.18 0 0);
-  --quality-good: oklch(0.71 0.18 145);
-  --quality-warn: oklch(0.82 0.17 85);
-  --quality-poor: oklch(0.64 0.23 26);
+  --quality-good: oklch(0.82 0.22 145);
+  --quality-warn: oklch(0.92 0.19 85);
+  --quality-poor: oklch(0.75 0.26 26);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -255,6 +255,33 @@
   width: 28px;
   height: 18px;
   bottom: 20px;
+}
+
+.bluetooth-signal-animated .bluetooth-signal-arc-wide {
+  animation: ble-arc-pulse 3.2s ease-in-out infinite 0.6s;
+}
+
+.bluetooth-signal-animated .bluetooth-signal-arc-mid {
+  animation: ble-arc-pulse 3.2s ease-in-out infinite 0.3s;
+}
+
+.bluetooth-signal-animated .bluetooth-signal-arc-inner {
+  animation: ble-arc-pulse 3.2s ease-in-out infinite 0s;
+}
+
+@keyframes ble-arc-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    color: #525252;
+  }
+  30% {
+    opacity: 1;
+    color: #e5e5e5;
+  }
+  60% {
+    opacity: 0.55;
+    color: #737373;
+  }
 }
 
 .auth-primary-action {

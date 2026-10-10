@@ -7,10 +7,10 @@ import {
   Check,
   ChevronRight,
   CircleUserRound,
-  Clock3,
   Dumbbell,
   Eye,
   EyeOff,
+  Italic,
   LockKeyhole,
   Minus,
   Pause,
@@ -33,9 +33,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logoAsset from "@/assets/smartrep-mark-blue-3.svg";
-import logoGrayAsset from "@/assets/smartrep-mark-gray.svg";
-import latPulldownAsset from "@/assets/lat-pulldown-clean.png";
+import smartRepMarkAsset from "@/assets/s-smartrep.svg";
+import chestPressAsset from "@/assets/weightlifting_machine_flaticons/chest-press.png";
+import latPulldownIconAsset from "@/assets/weightlifting_machine_flaticons/lat-pulldown.png";
+import legPressAsset from "@/assets/weightlifting_machine_flaticons/leg-press.png";
+import lowRowAsset from "@/assets/weightlifting_machine_flaticons/low-row.png";
 
 type Screen =
   | "splash"
@@ -57,13 +59,14 @@ type Machine = {
   id: string;
   status: MachineStatus;
   floor: string;
+  icon: string;
 };
 
 const nearbyMachines: [Machine, ...Machine[]] = [
-  { name: "Lat Pulldown", id: "SR-LP-014", status: "Free", floor: "Floor 01" },
-  { name: "Low Row", id: "SR-LR-008", status: "Occupied", floor: "Floor 01" },
-  { name: "Chest Press", id: "SR-CP-021", status: "Open for Alt.", floor: "Floor 01" },
-  { name: "Leg Press", id: "SR-LG-006", status: "Free", floor: "Floor 02" },
+  { name: "Lat Pulldown", id: "SR-LP-014", status: "Free", floor: "Floor 01", icon: latPulldownIconAsset },
+  { name: "Low Row", id: "SR-LR-008", status: "Occupied", floor: "Floor 01", icon: lowRowAsset },
+  { name: "Chest Press", id: "SR-CP-021", status: "Open for Alt.", floor: "Floor 01", icon: chestPressAsset },
+  { name: "Leg Press", id: "SR-LG-006", status: "Free", floor: "Floor 02", icon: legPressAsset },
 ];
 
 const screens: { id: Screen; label: string; step: string }[] = [
@@ -138,7 +141,7 @@ function Logo({
           aria-hidden
           className={cn(
             "bluetooth-signal absolute left-1/2 -translate-x-1/2",
-            centered ? "top-0" : "-top-9",
+            centered ? "-top-4" : "-top-13",
             animatedSignal && "bluetooth-signal-animated",
           )}
         >
@@ -148,15 +151,15 @@ function Logo({
         </div>
       )}
       <img
-        src={muted ? logoGrayAsset : logoAsset}
+        src={smartRepMarkAsset}
         alt="SmartRep"
         className={cn(
-          "shrink-0",
-          compact ? "size-9" : large ? "size-24" : "size-16",
+          "h-20 w-auto shrink-0 object-contain",
+          compact && "h-9",
           animatedSignal && "splash-mark-img-animated",
         )}
       />
-      <div className={cn(large && "mt-1 text-center", animatedSignal && "splash-mark-text-animated")}>
+      <div className={cn(large && "mt-2 text-center", animatedSignal && "splash-mark-text-animated")}>
         <div className={cn("font-display font-bold leading-none", compact ? "text-xl" : large ? "text-5xl" : "text-3xl")}>
           <span className={muted ? "text-[#525252]" : "text-[#2196F3]"}>SMART</span><span className="text-white">REP</span>
         </div>
@@ -241,14 +244,8 @@ function PrimaryButton({ children, className, ...props }: ComponentProps<typeof 
   );
 }
 
-function LatPulldown({ className, faded = false }: { className?: string; faded?: boolean }) {
-  return (
-    <img
-      src={latPulldownAsset}
-      alt="Lat Pulldown machine"
-      className={cn("object-contain", faded && "opacity-45", className)}
-    />
-  );
+function MachineIcon({ machine, className }: { machine: Machine; className?: string }) {
+  return <img src={machine.icon} alt="" aria-hidden="true" className={cn("object-contain", className)} />;
 }
 
 function AuthScreen({ go }: { go: (screen: Screen) => void }) {
@@ -334,7 +331,7 @@ function MachineStatus({ status }: { status: MachineStatus }) {
   };
 
   return (
-    <span className={cn("inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide", statusStyles[status])}>
+    <span className={cn("absolute right-0 top-0 inline-flex items-center gap-1.5 rounded-bl-md rounded-tr-lg px-3 py-1.5 text-[9px] font-bold uppercase tracking-wide", statusStyles[status])}>
       <span className="relative flex size-1.5">
         {status !== "Occupied" && <span className={cn("absolute inline-flex size-full animate-ping rounded-full opacity-60", dotStyles[status])} />}
         <span className={cn("relative inline-flex size-1.5 rounded-full", dotStyles[status])} />
@@ -370,15 +367,15 @@ function ScanScreen({ go, onSelect }: { go: (screen: Screen) => void; onSelect: 
               key={machine.id}
               type="button"
               onClick={() => onSelect(machine)}
-              className="group flex w-full items-center gap-3 rounded-lg border border-border bg-card p-3 text-left transition-colors hover:border-foreground/30 hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group relative flex w-full items-center gap-3 rounded-lg border border-border bg-card p-3 pt-4 text-left transition-colors hover:border-foreground/30 hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={`${machine.name}, ${machine.id}, ${machine.status}; ${machine.status === "Occupied" ? "view status" : "select machine"}`}
             >
               <span className="grid size-11 shrink-0 place-items-center rounded-md bg-secondary text-muted-foreground transition-colors group-hover:text-foreground">
-                <Dumbbell className="size-5" />
+                <MachineIcon machine={machine} className="size-9" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex flex-wrap items-center justify-between gap-1">
-                  <span className="truncate text-sm font-bold">{machine.name}</span>
+                <span className="block min-w-0">
+                  <span className="block truncate pr-24 text-sm font-bold">{machine.name}</span>
                   <MachineStatus status={machine.status} />
                 </span>
                 <span className="mt-1.5 flex items-center justify-between gap-2">
@@ -399,7 +396,7 @@ function ScanScreen({ go, onSelect }: { go: (screen: Screen) => void; onSelect: 
         <div className="mt-4 flex gap-2.5 rounded-lg border border-border/70 px-3.5 py-3">
           <Activity className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
           <p className="text-[10px] leading-relaxed text-muted-foreground">
-            <span className="font-semibold text-foreground">Open for Alt.</span> means someone is resting between sets — join in and take alternate reps.
+            <span className="font-semibold text-foreground">OPEN FOR ALT. (ALTERNATE REPS)</span> <br />means someone is resting between sets and is open to alternate reps.
           </p>
         </div>
       </div>
@@ -429,13 +426,9 @@ function ConnectingScreen({ go, machine }: { go: (screen: Screen) => void; machi
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold uppercase">{connected ? machine.name : "Hold steady"}</h1>
         </div>
-        {machine.name === "Lat Pulldown" ? (
-          <LatPulldown className="mx-auto mt-2 h-56 w-full" />
-        ) : (
-          <div className="mx-auto mt-2 grid h-56 w-full place-items-center text-muted-foreground">
-            <Dumbbell className="size-24 stroke-[1.1]" />
-          </div>
-        )}
+        <div className="mx-auto mt-2 grid h-56 w-full place-items-center">
+          <MachineIcon machine={machine} className="size-40" />
+        </div>
         <div className="grid grid-cols-3 divide-x divide-border border-y border-border py-4 text-center">
           <Stat label="Signal" value="−42 dBm" />
           <Stat label="Sensor" value="Hall + IMU" />
@@ -486,13 +479,9 @@ function ReservationScreen({ go, machine }: { go: (screen: Screen) => void; mach
       <TopBar title={machine.status === "Open for Alt." ? "Join machine" : "Reserve machine"} onBack={() => go("connecting")} />
       <div className="flex flex-1 flex-col px-6 pb-7">
         <div className="mt-4 flex items-center gap-5 border-y border-border py-5">
-          {machine.name === "Lat Pulldown" ? (
-            <LatPulldown className="h-28 w-32 shrink-0" />
-          ) : (
-            <div className="grid h-28 w-32 shrink-0 place-items-center text-muted-foreground">
-              <Dumbbell className="size-12 stroke-[1.2]" />
-            </div>
-          )}
+          <div className="grid h-28 w-32 shrink-0 place-items-center">
+            <MachineIcon machine={machine} className="size-20" />
+          </div>
           <div>
             <span className={cn(
               "inline-flex items-center gap-1.5 text-[10px] font-bold uppercase",
@@ -553,7 +542,7 @@ function CalibrationScreen({ go }: { go: (screen: Screen) => void }) {
           <div className="h-full bg-foreground transition-all duration-500" style={{ width: `${Math.min(rep / 5, 1) * 100}%` }} />
         </div>
         <div className="relative mt-8 h-[350px] overflow-hidden rounded-lg border border-border bg-card/35">
-          <LatPulldown className="absolute left-5 top-7 h-56 w-60 object-left" />
+          <MachineIcon machine={nearbyMachines[0]} className="absolute left-5 top-7 size-56" />
           <div className="absolute right-4 top-8 flex h-64 items-center gap-3">
             <div className="relative h-full w-3 rounded-full bg-secondary">
               <div className="absolute bottom-0 left-0 w-full rounded-full bg-foreground transition-all duration-500" style={{ height: `${20 + (rep % 5) * 17}%` }} />
@@ -571,7 +560,7 @@ function CalibrationScreen({ go }: { go: (screen: Screen) => void }) {
         <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
           Use a comfortable weight and your natural full range. SmartRep will learn your movement—not force a generic target.
         </p>
-        <PrimaryButton className="mt-auto" onClick={() => complete ? go("tracking") : setRep((value) => value + 1)}>
+        <PrimaryButton className="mt-6" onClick={() => complete ? go("tracking") : setRep((value) => value + 1)}>
           {complete ? <>Begin workout <ChevronRight /></> : <><Dumbbell /> Log calibration rep</>}
         </PrimaryButton>
       </div>
@@ -750,7 +739,7 @@ function ProfileScreen({ go }: { go: (screen: Screen) => void }) {
         <div className="flex items-center gap-4 border-b border-border py-5"><div className="grid size-20 shrink-0 place-items-center rounded-full bg-secondary font-display text-2xl font-bold">MU</div><div><h1 className="font-display text-3xl font-bold uppercase">Muhammad Umar</h1><p className="mt-1 text-xs text-muted-foreground">Age 22 · +92 300 1234567</p><span className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-quality-good"><Check className="size-3" /> Baseline calibrated</span></div></div>
         <section className="py-5"><div className="flex items-center justify-between"><h2 className="text-xs font-bold uppercase">Personal baseline</h2><Button variant="ghost" className="h-8 px-2 text-[10px] uppercase" onClick={() => go("calibration")}>Recalibrate</Button></div><div className="mt-3 grid grid-cols-2 gap-px bg-border"><Metric label="ROM range" value="48–92" suffix="cm" /><Metric label="Ideal speed" value="0.8–1.2" suffix="m/s" /><Metric label="Top pause" value="0.7–1.1" suffix="sec" /><Metric label="Confidence" value="94" suffix="%" /></div></section>
         <section className="border-t border-border py-5"><div className="flex justify-between"><div><h2 className="text-xs font-bold uppercase">30-day progress</h2><p className="mt-1 text-[10px] text-muted-foreground">Average rep quality</p></div><div className="text-right"><p className="font-display text-2xl font-bold text-quality-good">+12.8%</p><p className="text-[9px] uppercase text-muted-foreground">Improvement</p></div></div><Sparkline values={[55, 58, 61, 64, 72, 70, 81, 86]} /></section>
-        <section className="border-t border-border py-4"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><Dumbbell className="size-5" /><div><p className="text-xs font-semibold">Lat Pulldown</p><p className="text-[10px] text-muted-foreground">Most trained · 8 sessions</p></div></div><ChevronRight className="size-4 text-muted-foreground" /></div></section>
+        <section className="border-t border-border py-4"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><MachineIcon machine={nearbyMachines[0]} className="size-8" /><div><p className="text-xs font-semibold">Lat Pulldown</p><p className="text-[10px] text-muted-foreground">Most trained · 8 sessions</p></div></div><ChevronRight className="size-4 text-muted-foreground" /></div></section>
       </div>
       <BottomNav active="profile" go={go} />
     </div>
@@ -768,16 +757,11 @@ function UnavailableScreen({ go, machine }: { go: (screen: Screen) => void; mach
       <div className="flex flex-1 flex-col px-6 pb-7 text-center">
         <div className="mx-auto mt-7 grid size-20 place-items-center rounded-full bg-quality-warn/10"><LockKeyhole className="size-9 text-quality-warn" /></div>
         <p className="mt-5 text-xs font-bold uppercase text-quality-warn">Currently occupied</p><h1 className="mt-2 font-display text-4xl font-bold uppercase">{machine.name}</h1><p className="mt-2 text-xs text-muted-foreground">Station {machine.id} · {machine.floor}</p>
-        {machine.name === "Lat Pulldown" ? (
-          <LatPulldown className="mx-auto mt-4 h-56 w-full" />
-        ) : (
-          <div className="mx-auto mt-4 grid h-56 w-full place-items-center text-muted-foreground">
-            <Dumbbell className="size-24 stroke-[1.1]" />
-          </div>
-        )}
+        <div className="mx-auto mt-4 grid h-56 w-full place-items-center">
+          <MachineIcon machine={machine} className="size-40" />
+        </div>
         <div className="border-y border-border py-5 text-left"><div className="flex items-center justify-between"><div><p className="text-[10px] uppercase text-muted-foreground">Current workout</p><p className="mt-1 text-sm font-semibold">Anonymous member</p></div><span className="font-display text-2xl font-bold">2<span className="text-sm text-muted-foreground"> / 3 sets</span></span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full w-2/3 bg-quality-warn" /></div><div className="mt-3 flex justify-between text-[10px] text-muted-foreground"><span>Set 2 in progress</span><span>≈ 4 min remaining</span></div></div>
-        <div className="mt-5 flex gap-3 rounded-lg border border-border bg-card p-4 text-left"><Clock3 className="mt-0.5 size-5 shrink-0" /><p className="text-xs leading-relaxed text-muted-foreground">We'll refresh availability automatically. No personal workout details are shared.</p></div>
-        <PrimaryButton className="mt-auto" onClick={() => go("scan")}><Bluetooth /> Choose another machine</PrimaryButton>
+        <PrimaryButton className="mt-5" onClick={() => go("scan")}><Bluetooth /> Choose another machine</PrimaryButton>
       </div>
     </div>
   );

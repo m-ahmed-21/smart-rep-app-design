@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   BatteryMedium,
   Bluetooth,
-  Camera,
   Check,
   ChevronRight,
   CircleUserRound,
@@ -12,15 +11,12 @@ import {
   Dumbbell,
   Eye,
   EyeOff,
-  Flashlight,
-  GalleryHorizontal,
   LockKeyhole,
   Minus,
   Pause,
   Phone,
   Play,
   Plus,
-  QrCode,
   RotateCcw,
   ScanLine,
   Share2,
@@ -54,10 +50,26 @@ type Screen =
   | "summary"
   | "unavailable";
 
+type MachineStatus = "Free" | "Occupied" | "Open for Alt.";
+
+type Machine = {
+  name: string;
+  id: string;
+  status: MachineStatus;
+  floor: string;
+};
+
+const nearbyMachines: [Machine, ...Machine[]] = [
+  { name: "Lat Pulldown", id: "SR-LP-014", status: "Free", floor: "Floor 01" },
+  { name: "Low Row", id: "SR-LR-008", status: "Occupied", floor: "Floor 01" },
+  { name: "Chest Press", id: "SR-CP-021", status: "Open for Alt.", floor: "Floor 01" },
+  { name: "Leg Press", id: "SR-LG-006", status: "Free", floor: "Floor 02" },
+];
+
 const screens: { id: Screen; label: string; step: string }[] = [
   { id: "splash", label: "Splash", step: "00" },
   { id: "auth", label: "Sign in", step: "01" },
-  { id: "scan", label: "Scan machine", step: "02" },
+  { id: "scan", label: "Nearby machines", step: "02" },
   { id: "connecting", label: "BLE connection", step: "03" },
   { id: "reservation", label: "Reserve machine", step: "04" },
   { id: "calibration", label: "Calibration", step: "05" },
@@ -195,7 +207,7 @@ function TopBar({ title, onBack, action }: { title: string; onBack?: () => void;
 function BottomNav({ active, go }: { active: "progress" | "scan" | "profile"; go: (screen: Screen) => void }) {
   const items = [
     { id: "progress", label: "Progress", icon: TrendingUp, screen: "summary" as Screen },
-    { id: "scan", label: "Scan", icon: ScanLine, screen: "scan" as Screen },
+    { id: "scan", label: "Machines", icon: Dumbbell, screen: "scan" as Screen },
     { id: "profile", label: "Profile", icon: CircleUserRound, screen: "profile" as Screen },
   ];
   return (
@@ -309,53 +321,93 @@ function Field({ icon: Icon, label, value }: { icon: typeof Phone; label: string
   );
 }
 
-function ScanScreen({ go }: { go: (screen: Screen) => void }) {
-  const [torch, setTorch] = useState(false);
+function MachineStatus({ status }: { status: MachineStatus }) {
+  const statusStyles: Record<MachineStatus, string> = {
+    Free: "bg-quality-good/10 text-quality-good",
+    Occupied: "bg-quality-warn/10 text-quality-warn",
+    "Open for Alt.": "bg-sky-400/10 text-sky-300",
+  };
+  const dotStyles: Record<MachineStatus, string> = {
+    Free: "bg-quality-good",
+    Occupied: "bg-quality-warn",
+    "Open for Alt.": "bg-sky-300",
+  };
+
+  return (
+    <span className={cn("inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide", statusStyles[status])}>
+      <span className="relative flex size-1.5">
+        {status !== "Occupied" && <span className={cn("absolute inline-flex size-full animate-ping rounded-full opacity-60", dotStyles[status])} />}
+        <span className={cn("relative inline-flex size-1.5 rounded-full", dotStyles[status])} />
+      </span>
+      {status}
+    </span>
+  );
+}
+
+function ScanScreen({ go, onSelect }: { go: (screen: Screen) => void; onSelect: (machine: Machine) => void }) {
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Scan machine" action={<Bluetooth className="size-4 text-quality-good" />} />
-      <div className="px-5">
-        <div className="relative h-[500px] overflow-hidden rounded-lg bg-camera">
-          <div className="absolute inset-0 camera-grid opacity-40" />
-          <div className="absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 scan-frame">
-            <div className="scan-line" />
-            <div className="absolute inset-12 grid place-items-center border border-foreground/20 bg-background/60 backdrop-blur-sm">
-              <QrCode className="size-16" strokeWidth={1.2} />
-            </div>
-          </div>
-          <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-4">
-            <Button
-              size="icon"
-              variant={torch ? "default" : "secondary"}
-              onClick={() => setTorch((value) => !value)}
-              aria-label="Toggle flashlight"
-              className="size-12 rounded-full"
-            >
-              <Flashlight />
-            </Button>
-            <Button size="icon" variant="secondary" aria-label="Open gallery" className="size-12 rounded-full">
-              <GalleryHorizontal />
-            </Button>
-          </div>
-        </div>
-        <div className="py-6 text-center">
-          <h1 className="font-display text-2xl font-bold uppercase">Align the machine QR</h1>
-          <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
-            Scanning identifies the machine and securely starts Bluetooth pairing.
+      <TopBar title="Machines nearby" />
+      <div className="px-5 pb-5">
+        <div className="pb-5 pt-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Your next set starts here</p>
+          <h1 className="mt-2 font-display text-4xl font-bold uppercase leading-none">Find a machine.</h1>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Choose a nearby station to connect.
           </p>
-          <PrimaryButton className="mt-5" onClick={() => go("connecting")}>
-            <Camera /> Simulate scan
-          </PrimaryButton>
-          <Button variant="ghost" className="mt-1 text-xs text-muted-foreground" onClick={() => go("unavailable")}>
-            Preview reserved machine
-          </Button>
+        </div>
+
+        <div className="mb-3 flex items-center gap-3 py-2.5">
+          <span className="shrink-0 text-[9px] font-bold tracking-[0.16em] text-muted-foreground">
+            {nearbyMachines.length} machines in range
+          </span>
+          <span aria-hidden="true" className="h-px flex-1 bg-border" />
+        </div>
+
+        <div className="space-y-2.5">
+          {nearbyMachines.map((machine) => (
+            <button
+              key={machine.id}
+              type="button"
+              onClick={() => onSelect(machine)}
+              className="group flex w-full items-center gap-3 rounded-lg border border-border bg-card p-3 text-left transition-colors hover:border-foreground/30 hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={`${machine.name}, ${machine.id}, ${machine.status}; ${machine.status === "Occupied" ? "view status" : "select machine"}`}
+            >
+              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-secondary text-muted-foreground transition-colors group-hover:text-foreground">
+                <Dumbbell className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center justify-between gap-1">
+                  <span className="truncate text-sm font-bold">{machine.name}</span>
+                  <MachineStatus status={machine.status} />
+                </span>
+                <span className="mt-1.5 flex items-center justify-between gap-2">
+                  <span className="truncate font-mono text-[9px] tracking-wide text-muted-foreground">{machine.id} · {machine.floor}</span>
+                  <span className="shrink-0 text-muted-foreground">
+                    {machine.status === "Occupied" ? (
+                      <span className="text-[9px] font-semibold uppercase">Details</span>
+                    ) : (
+                      <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                    )}
+                  </span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 flex gap-2.5 rounded-lg border border-border/70 px-3.5 py-3">
+          <Activity className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+          <p className="text-[10px] leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-foreground">Open for Alt.</span> means someone is resting between sets — join in and take alternate reps.
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-function ConnectingScreen({ go }: { go: (screen: Screen) => void }) {
+function ConnectingScreen({ go, machine }: { go: (screen: Screen) => void; machine: Machine }) {
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     const timeout = window.setTimeout(() => setConnected(true), 1500);
@@ -373,18 +425,24 @@ function ConnectingScreen({ go }: { go: (screen: Screen) => void }) {
         </div>
         <div className="mt-5 text-center" aria-live="polite">
           <p className={cn("text-xs font-bold uppercase", connected ? "text-quality-good" : "text-muted-foreground")}>
-            {connected ? "Sensor stream live" : "Connecting to SR-LP-014"}
+            {connected ? "Sensor stream live" : `Connecting to ${machine.id}`}
           </p>
-          <h1 className="mt-2 font-display text-3xl font-bold uppercase">{connected ? "Lat Pulldown" : "Hold steady"}</h1>
+          <h1 className="mt-2 font-display text-3xl font-bold uppercase">{connected ? machine.name : "Hold steady"}</h1>
         </div>
-        <LatPulldown className="mx-auto mt-2 h-56 w-full" />
+        {machine.name === "Lat Pulldown" ? (
+          <LatPulldown className="mx-auto mt-2 h-56 w-full" />
+        ) : (
+          <div className="mx-auto mt-2 grid h-56 w-full place-items-center text-muted-foreground">
+            <Dumbbell className="size-24 stroke-[1.1]" />
+          </div>
+        )}
         <div className="grid grid-cols-3 divide-x divide-border border-y border-border py-4 text-center">
           <Stat label="Signal" value="−42 dBm" />
           <Stat label="Sensor" value="Hall + IMU" />
           <Stat label="Battery" value="84%" />
         </div>
         <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-          Cable resistance machine for controlled vertical pulling. Targets the lats, upper back, and biceps.
+          {machine.name} sensor is ready to pair. SmartRep will track your movement and rep quality in real time.
         </p>
         <PrimaryButton className="mt-auto" disabled={!connected} onClick={() => go("reservation")}>
           Start lifting <ChevronRight />
@@ -420,21 +478,31 @@ function Stepper({ label, value, setValue, min, max }: { label: string; value: n
   );
 }
 
-function ReservationScreen({ go }: { go: (screen: Screen) => void }) {
+function ReservationScreen({ go, machine }: { go: (screen: Screen) => void; machine: Machine }) {
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(10);
   return (
     <div className="flex min-h-full flex-col">
-      <TopBar title="Reserve machine" onBack={() => go("connecting")} />
+      <TopBar title={machine.status === "Open for Alt." ? "Join machine" : "Reserve machine"} onBack={() => go("connecting")} />
       <div className="flex flex-1 flex-col px-6 pb-7">
         <div className="mt-4 flex items-center gap-5 border-y border-border py-5">
-          <LatPulldown className="h-28 w-32 shrink-0" />
+          {machine.name === "Lat Pulldown" ? (
+            <LatPulldown className="h-28 w-32 shrink-0" />
+          ) : (
+            <div className="grid h-28 w-32 shrink-0 place-items-center text-muted-foreground">
+              <Dumbbell className="size-12 stroke-[1.2]" />
+            </div>
+          )}
           <div>
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-quality-good">
-              <span className="size-1.5 rounded-full bg-quality-good" /> Available now
+            <span className={cn(
+              "inline-flex items-center gap-1.5 text-[10px] font-bold uppercase",
+              machine.status === "Open for Alt." ? "text-sky-300" : "text-quality-good",
+            )}>
+              <span className={cn("size-1.5 rounded-full", machine.status === "Open for Alt." ? "bg-sky-300" : "bg-quality-good")} />
+              {machine.status === "Open for Alt." ? "Open for alternate reps" : "Available now"}
             </span>
-            <h1 className="mt-2 font-display text-2xl font-bold uppercase">Lat Pulldown</h1>
-            <p className="mt-1 text-xs text-muted-foreground">Station LP-014 · Floor 01</p>
+            <h1 className="mt-2 font-display text-2xl font-bold uppercase">{machine.name}</h1>
+            <p className="mt-1 text-xs text-muted-foreground">Station {machine.id} · {machine.floor}</p>
           </div>
         </div>
         <div className="mt-8">
@@ -445,7 +513,9 @@ function ReservationScreen({ go }: { go: (screen: Screen) => void }) {
         <div className="mt-6 flex gap-3 rounded-lg border border-border bg-card p-4">
           <ShieldCheck className="mt-0.5 size-5 shrink-0" />
           <p className="text-xs leading-relaxed text-muted-foreground">
-            This station is held for you until all {sets} sets are complete or you end the exercise.
+            {machine.status === "Open for Alt."
+              ? "You'll share this station and alternate sets with the current member."
+              : `This station is held for you until all ${sets} sets are complete or you end the exercise.`}
           </p>
         </div>
         <div className="mt-auto">
@@ -456,7 +526,9 @@ function ReservationScreen({ go }: { go: (screen: Screen) => void }) {
             </div>
             <p className="text-xs text-muted-foreground">≈ {sets * 2} min</p>
           </div>
-          <PrimaryButton onClick={() => go("calibration")}>Reserve & continue <ChevronRight /></PrimaryButton>
+          <PrimaryButton onClick={() => go("calibration")}>
+            {machine.status === "Open for Alt." ? "Join & continue" : "Reserve & continue"} <ChevronRight />
+          </PrimaryButton>
         </div>
       </div>
     </div>
@@ -689,17 +761,23 @@ function Metric({ label, value, suffix }: { label: string; value: string; suffix
   return <div className="rounded-lg bg-card p-4"><p className="text-[9px] uppercase text-muted-foreground">{label}</p><p className="mt-2 font-display text-2xl font-bold">{value}<span className="ml-1 text-[10px] text-muted-foreground">{suffix}</span></p></div>;
 }
 
-function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
+function UnavailableScreen({ go, machine }: { go: (screen: Screen) => void; machine: Machine }) {
   return (
     <div className="flex min-h-full flex-col">
       <TopBar title="Machine status" onBack={() => go("scan")} />
       <div className="flex flex-1 flex-col px-6 pb-7 text-center">
         <div className="mx-auto mt-7 grid size-20 place-items-center rounded-full bg-quality-warn/10"><LockKeyhole className="size-9 text-quality-warn" /></div>
-        <p className="mt-5 text-xs font-bold uppercase text-quality-warn">Currently reserved</p><h1 className="mt-2 font-display text-4xl font-bold uppercase">Lat Pulldown</h1><p className="mt-2 text-xs text-muted-foreground">Station LP-014 · Floor 01</p>
-        <LatPulldown className="mx-auto mt-4 h-56 w-full" />
+        <p className="mt-5 text-xs font-bold uppercase text-quality-warn">Currently occupied</p><h1 className="mt-2 font-display text-4xl font-bold uppercase">{machine.name}</h1><p className="mt-2 text-xs text-muted-foreground">Station {machine.id} · {machine.floor}</p>
+        {machine.name === "Lat Pulldown" ? (
+          <LatPulldown className="mx-auto mt-4 h-56 w-full" />
+        ) : (
+          <div className="mx-auto mt-4 grid h-56 w-full place-items-center text-muted-foreground">
+            <Dumbbell className="size-24 stroke-[1.1]" />
+          </div>
+        )}
         <div className="border-y border-border py-5 text-left"><div className="flex items-center justify-between"><div><p className="text-[10px] uppercase text-muted-foreground">Current workout</p><p className="mt-1 text-sm font-semibold">Anonymous member</p></div><span className="font-display text-2xl font-bold">2<span className="text-sm text-muted-foreground"> / 3 sets</span></span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full w-2/3 bg-quality-warn" /></div><div className="mt-3 flex justify-between text-[10px] text-muted-foreground"><span>Set 2 in progress</span><span>≈ 4 min remaining</span></div></div>
         <div className="mt-5 flex gap-3 rounded-lg border border-border bg-card p-4 text-left"><Clock3 className="mt-0.5 size-5 shrink-0" /><p className="text-xs leading-relaxed text-muted-foreground">We'll refresh availability automatically. No personal workout details are shared.</p></div>
-        <PrimaryButton className="mt-auto" onClick={() => go("scan")}><ScanLine /> Scan another machine</PrimaryButton>
+        <PrimaryButton className="mt-auto" onClick={() => go("scan")}><Bluetooth /> Choose another machine</PrimaryButton>
       </div>
     </div>
   );
@@ -707,7 +785,12 @@ function UnavailableScreen({ go }: { go: (screen: Screen) => void }) {
 
 export function SmartRepApp() {
   const [screen, setScreen] = useState<Screen>("splash");
+  const [selectedMachine, setSelectedMachine] = useState<Machine>(nearbyMachines[0]);
   const go = (target: Screen) => setScreen(target);
+  const selectMachine = (machine: Machine) => {
+    setSelectedMachine(machine);
+    go(machine.status === "Occupied" ? "unavailable" : "connecting");
+  };
   return (
     <div className="min-h-screen bg-stage px-0 py-0 sm:px-6 sm:py-8 lg:grid lg:grid-cols-[260px_1fr] lg:items-start lg:gap-8 lg:px-10">
       <aside className="sticky top-8 hidden h-[844px] flex-col border border-border bg-background p-5 lg:flex">
@@ -732,15 +815,15 @@ export function SmartRepApp() {
         <PhoneShell>
           {screen === "splash" && <SplashScreen go={go} />}
           {screen === "auth" && <AuthScreen go={go} />}
-          {screen === "scan" && <ScanScreen go={go} />}
-          {screen === "connecting" && <ConnectingScreen go={go} />}
-          {screen === "reservation" && <ReservationScreen go={go} />}
+          {screen === "scan" && <ScanScreen go={go} onSelect={selectMachine} />}
+          {screen === "connecting" && <ConnectingScreen go={go} machine={selectedMachine} />}
+          {screen === "reservation" && <ReservationScreen go={go} machine={selectedMachine} />}
           {screen === "calibration" && <CalibrationScreen go={go} />}
           {screen === "tracking" && <TrackingScreen go={go} />}
           {screen === "rest" && <RestScreen go={go} />}
           {screen === "summary" && <SummaryScreen go={go} />}
           {screen === "profile" && <ProfileScreen go={go} />}
-          {screen === "unavailable" && <UnavailableScreen go={go} />}
+          {screen === "unavailable" && <UnavailableScreen go={go} machine={selectedMachine} />}
         </PhoneShell>
         <div className="mx-auto mt-3 hidden max-w-[390px] items-center justify-between text-[10px] uppercase text-muted-foreground sm:flex">
           <span>{screens.find((item) => item.id === screen)?.label}</span>

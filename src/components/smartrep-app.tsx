@@ -138,9 +138,13 @@ function Logo({
       <img
         src={muted ? logoGrayAsset : logoAsset}
         alt="SmartRep"
-        className={cn("shrink-0", compact ? "size-9" : large ? "size-24" : "size-16")}
+        className={cn(
+          "shrink-0",
+          compact ? "size-9" : large ? "size-24" : "size-16",
+          animatedSignal && "splash-mark-img-animated",
+        )}
       />
-      <div className={cn(large && "mt-1 text-center")}>
+      <div className={cn(large && "mt-1 text-center", animatedSignal && "splash-mark-text-animated")}>
         <div className={cn("font-display font-bold leading-none", compact ? "text-xl" : large ? "text-5xl" : "text-3xl")}>
           <span className={muted ? "text-[#525252]" : "text-[#2196F3]"}>SMART</span><span className="text-white">REP</span>
         </div>

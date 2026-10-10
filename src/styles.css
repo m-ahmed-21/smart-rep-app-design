@@ -257,16 +257,37 @@
   bottom: 20px;
 }
 
-.bluetooth-signal-animated .bluetooth-signal-arc-wide {
-  animation: ble-arc-pulse 3.2s ease-in-out infinite 0.6s;
+/*
+ * Back to the original spacing: every element uses the same 3.2s bump
+ * (rest -> peak at 30% -> dip at 60% -> rest at 100%) and just gets delayed
+ * 0.3s more than the one before it - the exact stagger the three arcs used
+ * in the very first version. Extended down through the mark and text so the
+ * whole lockup ripples as one tight, continuous wave:
+ *   0s     arc-inner
+ *   0.3s   arc-mid
+ *   0.6s   arc-wide
+ *   0.9s   mark
+ *   1.2s   text
+ * each looping every 3.2s.
+ */
+.bluetooth-signal-animated .bluetooth-signal-arc-inner {
+  animation: ble-arc-pulse 4.2s ease-in-out infinite 0s;
 }
 
 .bluetooth-signal-animated .bluetooth-signal-arc-mid {
-  animation: ble-arc-pulse 3.2s ease-in-out infinite 0.3s;
+  animation: ble-arc-pulse 4.2s ease-in-out infinite 0.3s;
 }
 
-.bluetooth-signal-animated .bluetooth-signal-arc-inner {
-  animation: ble-arc-pulse 3.2s ease-in-out infinite 0s;
+.bluetooth-signal-animated .bluetooth-signal-arc-wide {
+  animation: ble-arc-pulse 4.2s ease-in-out infinite 0.6s;
+}
+
+.splash-mark-img-animated {
+  animation: mark-pulse 4.22s ease-in-out infinite 0.8s;
+}
+
+.splash-mark-text-animated {
+  animation: mark-pulse 4.22s ease-in-out infinite 0.8s;
 }
 
 @keyframes ble-arc-pulse {
@@ -281,6 +302,21 @@
   60% {
     opacity: 0.55;
     color: #737373;
+  }
+}
+
+@keyframes mark-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    filter: brightness(0.85);
+  }
+  30% {
+    opacity: 1;
+    filter: brightness(1.15);
+  }
+  60% {
+    opacity: 0.8;
+    filter: brightness(0.95);
   }
 }
 

@@ -136,7 +136,6 @@ smart-rep-app-design/
 ## 🔗 Important Links
 
 *   **Live App**: [https://smart-rep-vista.lovable.app](https://smart-rep-vista.lovable.app)
-*   **Lovable Editor**: [https://lovable.dev/projects/6eb3f04b-730b-4df9-8db8-fad70cab99a6](https://lovable.dev/projects/6eb3f04b-730b-4df9-8db8-fad70cab99a6)
 
 ## 📝 Footer
 

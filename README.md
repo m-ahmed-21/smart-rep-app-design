@@ -30,62 +30,6 @@ SmartRep aims to enhance the gym experience by providing users with detailed ins
 *   **Build Tool**: Vite
 *   **Icons**: Lucide React
 
-## 🚀 Installation
-
-Follow these steps to set up the project locally:
-
-1.  **Clone the repository**:
-    ```sh
-    git clone https://github.com/m-ahmed-21/smart-rep-app-design
-    cd smart-rep-app-design
-    ```
-
-2.  **Install dependencies**:
-    Make sure you have Node.js installed. It is recommended to use `nvm` for managing Node.js versions.
-    ```sh
-    npm i
-    ```
-
-3.  **Run the development server**:
-    ```sh
-    npm run dev
-    ```
-
-This will start the development server, and you can access the application in your browser, typically at `http://localhost:5173` (or the port specified by Vite).
-
-## 💡 Usage
-
-This project is a front-end design (Proof of Concept) for the SmartRep mobile application. It simulates the user interface and interaction flow.
-
-**Key User Flows:**
-
-1.  **Machine Discovery**: The app scans for nearby compatible gym machines via Bluetooth.
-2.  **Machine Selection**: Users can view machine status (Free, Occupied, Open for Alt.) and select a machine.
-3.  **Connection & Calibration**: Establishes a Bluetooth connection with the selected machine's sensor and guides the user through a quick calibration process to personalize rep detection.
-4.  **Workout Tracking**: Once calibrated, the app tracks reps in real-time, providing feedback on rep quality, range of motion, and speed.
-5.  **Rest Timer**: Automatically manages rest periods between sets.
-6.  **Session Summary**: After the workout, a summary screen displays key performance metrics.
-7.  **Profile Management**: Users can view their workout history, progress, and personal baselines.
-
-**Example:**
-
-*   **Connecting to a Machine**:
-    ```typescript
-    // Simulate selecting a machine and initiating connection
-    const handleMachineSelect = (machine) => {
-      // Logic to navigate to connecting screen and establish Bluetooth connection
-      console.log(`Connecting to ${machine.name} (${machine.id})...`);
-    };
-    ```
-
-*   **Tracking a Rep**:
-    The `TrackingScreen` component visually represents real-time rep data, including:
-    *   Current rep count.
-    *   Set progress.
-    *   Range of Motion (ROM) bar.
-    *   Rep speed gauge.
-    *   Form alerts for potential issues.
-
 ## 📁 Project Structure
 
 The project follows a standard Next.js/TanStack Router structure with organized component and utility directories:
